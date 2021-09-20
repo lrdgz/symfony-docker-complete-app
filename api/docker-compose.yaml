@@ -1,8 +1,8 @@
 version: '3.5'
 
 services:
-  synfony-api-platform-web:
-    container_name: synfony-api-platform-web
+  symfony-api-platform-web:
+    container_name: symfony-api-platform-web
     build:
       context: ./docker/nginx
       args:
@@ -13,12 +13,12 @@ services:
     volumes:
       - ./public:/appdata/www/public
     depends_on:
-      - synfony-api-platform-be
+      - symfony-api-platform-be
     networks:
-      - synfony-api-platform-network
+      - symfony-api-platform-network
 
-  synfony-api-platform-be:
-    container_name: synfony-api-platform-be
+  symfony-api-platform-be:
+    container_name: symfony-api-platform-be
     build:
       context: docker/php
       args:
@@ -26,36 +26,36 @@ services:
         UID: "1000"
     environment:
       PHP_IDE_CONFIG: serverName=Docker
-      PHP_XDEBUG_ENABLED: 1
-      XDEBUG_CONFIG: remote_host=192.168.0.12 remote_port=9005
+      XDEBUG_CLIENT_HOST: 192.168.0.12
+      XDEBUG_CLIENT_PORT: 9003
     volumes:
       - ./:/appdata/www
-      - ./docker/php/xdebug-windows.ini:/usr/local/etc/php/conf.d/xdebux.ini
+      - ./docker/php/xdebux.ini:/usr/local/etc/php/conf.d/xdebux.ini
       - ~/.ssh/id_rsa:/home/appuser/.ssh/id_rsa
     depends_on:
-      - synfony-api-platform-db
+      - symfony-api-platform-db
     networks:
-      - synfony-api-platform-network
+      - symfony-api-platform-network
 
-  synfony-api-platform-db:
-    container_name: synfony-api-platform-db
+  symfony-api-platform-db:
+    container_name: symfony-api-platform-db
     image: mysql:8.0
     ports:
       - "35000:3306"
     environment:
-      MYSQL_DATABASE: synfony_db
+      MYSQL_DATABASE: symfony_db
       MYSQL_USER: user
       MYSQL_PASSWORD: password
       MYSQL_ROOT_PASSWORD: root
     command: mysqld --sql_mode="STRICT_ALL_TABLES,NO_ENGINE_SUBSTITUTION"
     volumes:
-      - synfony-api-platform-db-data:/var/lib/mysql
+      - symfony-api-platform-db-data:/var/lib/mysql
     networks:
-      - synfony-api-platform-network
+      - symfony-api-platform-network
 
 volumes:
-  synfony-api-platform-db-data:
+  symfony-api-platform-db-data:
 
 networks:
-  synfony-api-platform-network:
+  symfony-api-platform-network:
     external: true

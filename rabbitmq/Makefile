@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DOCKER_BE = symfony-api-platform-rabbitmq
+RABBIT = symfony-api-platform-rabbitmq
 OS := $(shell uname)
 
 ifeq ($(OS), Darwin)
@@ -12,10 +12,10 @@ else
 endif
 
 help: ## Show this help message
-  @echo 'usage: make [target]'
-  @echo
-  @echo 'targets'
-  @echo '^(.+)+\:\ ##\ (.+)' ${MAKEFILE_LIST} | column -t -c 2 -s ':#'
+	@echo 'usage: make [target]'
+	@echo
+	@echo 'targets:'
+	@egrep '^(.+)\:\ ##\ (.+)' ${MAKEFILE_LIST} | column -t -c 2 -s ':#'
 
 run: ## Start the containers
   docker network create symfony-network || true
@@ -26,3 +26,9 @@ stop: ## Stop the containers
 
 restart: ## Restart the containers
   $(MAKE) stop && $(MAKE) run
+
+build: ## Rebuilds all the containers
+	U_ID=${UID} docker-compose build
+
+ssh: ## ssh's into the container
+	U_ID=${UID} docker exec -it --user ${UID} ${RABBIT} bash
