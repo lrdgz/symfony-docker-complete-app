@@ -17,7 +17,7 @@ class UserRepository extends BaseRepository
         return User::class;
     }
 
-    public function findByImageOrFail(string $email): User
+    public function findByEmailOrFail(string $email): User
     {
         if (null === $user = $this->objectRepository->findOneBy(['email', $email])) {
             UserNotFoundException::fromEmail($email);
